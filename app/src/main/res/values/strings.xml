@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Patol</string>
+    <string name="back">Voltar</string>
+    <string name="download">Baixando Materiais</string>
+    <string name="error_phrases">Erro ao baixar os arquivos</string>
+    <string name="sucess_login">Materiais atulizados com suceeso</string>
+</resources>
