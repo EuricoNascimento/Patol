@@ -18,8 +18,14 @@ interface MaterialDao {
     fun getAllMaterial(): List<MaterialDTO>
 
     @Query("SELECT * FROM content WHERE material_id = :id")
-    fun getAllContentByMaterialId(id: Int): List<ContentDTO>
+    fun getAllContentByMaterialId(id: Long): List<ContentDTO>
 
     @Query("SELECT id FROM material")
-    fun getAllMaterialId(): List<Long>
+    fun getAllMaterialIds(): List<Long>
+
+    @Query("DELETE FROM material")
+    fun deleteAllMaterial()
+
+    @Query("DELETE FROM content")
+    fun deleteAllContent()
 }

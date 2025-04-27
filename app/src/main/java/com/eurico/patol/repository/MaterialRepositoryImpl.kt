@@ -1,17 +1,17 @@
 package com.eurico.patol.repository
 
+import com.eurico.patol.R
+import com.eurico.patol.common.constanst.UrlConstants
+import com.eurico.patol.common.util.ImageUtil
+import com.eurico.patol.common.util.ServerUtil
 import com.eurico.patol.database.AppDatabase
 import com.eurico.patol.model.ConsultResult
-import com.eurico.patol.model.IdsRequest
 import com.eurico.patol.model.Material
+import com.eurico.patol.model.database.ContentDTO
 import com.eurico.patol.model.database.MaterialDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -20,49 +20,28 @@ class MaterialRepositoryImpl(
     private val appDatabase: AppDatabase
 ): MaterialRepository {
 
-    fun checkMaterial(): Flow<ConsultResult<Boolean>> = flow {
+    override suspend fun checkMaterial(): Flow<ConsultResult<Boolean>> = flow {
         emit(ConsultResult.Loading)
+
         try {
             val materialDao = appDatabase.materialDao()
-            val materialId = materialDao.getAllMaterialId()
+            val materialIds = materialDao.getAllMaterialIds()
 
-            if (materialId.isEmpty()) {
-                val result = getAllMaterialsFromApi()
+            when {
+                ServerUtil.isSiteOnline(UrlConstants.PATOL_URL) -> {
+                    if (materialIds.isNotEmpty()) dropDatabase()
+                    val result = getAllMaterialsFromApi()
 
-                if(result is ConsultResult.Success) {
+                    if (result is ConsultResult.Success) {
+                        emit(ConsultResult.Success(true))
+                    }
+                }
+                !ServerUtil.isSiteOnline(UrlConstants.PATOL_URL) && materialIds.isNotEmpty() ->
                     emit(ConsultResult.Success(true))
-                    return@flow
-                }
-                emit(ConsultResult.Success(false))
-                return@flow
-            }
-
-            val result = getMaterialsWithoutIds(materialId)
-            if (result is ConsultResult.Success ) {
-                emit(ConsultResult.Success(true))
-                return@flow
-            }
-            emit(ConsultResult.Success(false))
-            return@flow
-        } catch (e: Exception) {
-            emit(ConsultResult.Error(e))
-        }
-    }
-
-    override suspend fun getAllMaterialsFromApi(): ConsultResult<List<Material>> {
-        return try {
-            val response = httpClient.get("https://66f2-2804-d4b-7763-3000-d450-565d-24b4-e440.ngrok-free.app/materialApi/getAll")
-            when (response.status.value) {
-                200 -> {
-                    val materialList = response.body<List<Material>>()
-                    materialList.forEach{material -> saveInDadaBase(material)}
-                    ConsultResult.Success(materialList)
-                }
-
-                else -> throw response.body()
+                else -> emit(ConsultResult.Error(Exception(R.string.connection_error.toString())))
             }
         } catch (e: Exception) {
-            throw e
+            emit(ConsultResult.Error(Exception(R.string.download_error.toString())))
         }
     }
     override suspend fun getAllMaterialsFromDataBase(): Flow<ConsultResult<List<MaterialDTO>>> = flow {
@@ -77,20 +56,30 @@ class MaterialRepositoryImpl(
         }
     }
 
-    override suspend fun getMaterialsWithoutIds(ids: List<Long>): ConsultResult<List<Material>> {
-        return try {
-            val response = httpClient
-                .post("https://66f2-2804-d4b-7763-3000-d450-565d-24b4-e440.ngrok-free.app/materialApi/getAllExclude") {
-                    contentType(ContentType.Application.Json)
-                    setBody(IdsRequest(ids))
-                }
+    override suspend fun getAllContentByMaterialId(materialId: Long): Flow<ConsultResult<List<ContentDTO>>> = flow {
+        emit(ConsultResult.Loading)
+        val materialDao = appDatabase.materialDao()
 
+        try {
+            val contentList = materialDao.getAllContentByMaterialId(materialId)
+
+            contentList.forEach {
+                it.img = ImageUtil.converterBase64ToImg(it.image)
+            }
+
+            emit(ConsultResult.Success(contentList))
+        } catch (e: Exception) {
+            emit(ConsultResult.Error(e))
+        }
+    }
+
+    private suspend fun getAllMaterialsFromApi(): ConsultResult<List<Material>> {
+        return try {
+            val response = httpClient.get("${UrlConstants.PATOL_URL}materialApi/getAll")
             when (response.status.value) {
                 200 -> {
                     val materialList = response.body<List<Material>>()
-                    if (materialList.isNotEmpty()) {
-                        materialList.forEach { material -> saveInDadaBase(material) }
-                    }
+                    materialList.forEach{material -> saveInDadaBase(material)}
                     ConsultResult.Success(materialList)
                 }
 
@@ -101,7 +90,7 @@ class MaterialRepositoryImpl(
         }
     }
 
-    override suspend fun saveInDadaBase(material: Material) {
+    private fun saveInDadaBase(material: Material) {
         val materialDao = appDatabase.materialDao()
 
         try {
@@ -115,7 +104,14 @@ class MaterialRepositoryImpl(
         }
     }
 
-    override suspend fun getAllMaterialIdsFromDatabase(): Flow<ConsultResult<List<Long>>> {
-        TODO("Not yet implemented")
+    private fun dropDatabase() {
+        val materialDao = appDatabase.materialDao()
+
+        try {
+            materialDao.deleteAllContent()
+            materialDao.deleteAllMaterial()
+        } catch (e: Exception) {
+            throw e
+        }
     }
 }

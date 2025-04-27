@@ -23,15 +23,11 @@ class LoadingViewModel(
          viewModelScope.launch(Dispatchers.IO) {
              materialRepository.checkMaterial().collect{
                  when (it) {
-                     is ConsultResult.Error -> _loginPhrase.value.intValue = R.string.error_phrases
+                     is ConsultResult.Error ->
+                         _loginPhrase.value.intValue = it.exception.message?.toIntOrNull() ?: R.string.download_error
                      is ConsultResult.Loading -> _loginPhrase.value.intValue = 0
-                     is ConsultResult.Success -> {
-                         if (it.data) {
-                             _loginPhrase.value.intValue = R.string.sucess_login
-                            return@collect
-                         }
-                         _loginPhrase.value.intValue = R.string.error_phrases
-                     }
+                     is ConsultResult.Success -> _loginPhrase.value.intValue = R.string.sucess_login
+
                  }
              }
          }

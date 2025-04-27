@@ -21,7 +21,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.navigation.NavController
+import com.eurico.patol.R
 import com.eurico.patol.model.database.MaterialDTO
 import com.eurico.patol.ui.RouterSet
 import com.eurico.patol.ui.screen.components.RotatingIcon
@@ -43,11 +47,12 @@ fun MaterialListScreen(
 
     when{
         enableLoading.value.value -> RotatingIcon()
-        errorMessage.value.value != 0 -> {}
+        errorMessage.value.value == R.string.download_error
+                || errorMessage.value.value == R.string.connection_error -> {}
         materialList.value.value.isNotEmpty() -> ListItem(
             materials = materialList.value.value,
-            finishCallBack = {
-                navController.navigate("${RouterSet.LIST_SCREEN.name}/$it")
+            finishCallBack = { materialId ->
+                navController.navigate("${RouterSet.MATERIAL_SCREEN.name}/$materialId")
             }
         )
     }
@@ -62,9 +67,10 @@ fun ListItem(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
-        items (materials) { material ->
+        items(materials) { material ->
             ItemBoxDescription(material, finishCallBack)
         }
     }
@@ -76,14 +82,20 @@ fun ItemBoxDescription(
     finishCallBack: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Box(
         modifier = modifier
-            .clickable { finishCallBack.invoke(material.id) }
-            .semantics(mergeDescendants = true) {}
+            .clickable(
+                onClick = { finishCallBack.invoke(material.id) },
+                role = Role.Button
+            )
+            .semantics {
+                contentDescription = context.getString(R.string.item_box_description, material.title)
+            }
             .fillMaxSize()
             .padding(8.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.primary),
+            .background(MaterialTheme.colorScheme.primaryContainer),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -93,14 +105,14 @@ fun ItemBoxDescription(
                 text = material.title,
                 fontSize = 48.sp,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Text(
                 text = material.subtitle,
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
