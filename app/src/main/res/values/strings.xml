@@ -2,6 +2,14 @@
     <string name="app_name">Patol</string>
     <string name="back">Voltar</string>
     <string name="download">Baixando Materiais</string>
-    <string name="error_phrases">Erro ao baixar os arquivos</string>
+    <string name="download_error">Erro ao baixar os arquivos</string>
+    <string name="connection_error">Erro de conexão: conecte se a internet ou procure um lugar com sinal</string>
     <string name="sucess_login">Materiais atulizados com suceeso</string>
+    <string name="no_content_available">Nenhum conteudo disponivel.</string>
+    <string name="pager_content_description">\"Pager de conteúdo. Deslize para a esquerda ou direita para alterar o conteúdo.\"</string>
+    <string name="content_item_description">Pagina %d</string>
+    <string name="image_content_description">Imagem com descrição: %s</string>
+    <string name="item_box_description">Material: %s. Clique para selecionar</string>
+    <string name="back_page">Anterior: pagina %d</string>
+    <string name="next_page">Proximo: pagina %d</string>
 </resources>

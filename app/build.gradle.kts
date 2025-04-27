@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.slf4j.android)
+    implementation(libs.ktor.client.okhttp)
 
     //Json
     implementation(libs.moshi.kotlin)
@@ -82,4 +83,7 @@ dependencies {
     //Navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.jetbrains.kotlinx.serialization.json)
+
+    //Glide
+    implementation(libs.glide.compose)
 }

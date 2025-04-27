@@ -61,7 +61,7 @@ fun Router() {
                                 bottomStart = 16.dp
                             )
                         )
-                        .background(MaterialTheme.colorScheme.primary),
+                        .background(MaterialTheme.colorScheme.background),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -92,7 +92,7 @@ fun Router() {
                 padding = padding
             )
         },
-        containerColor = MaterialTheme.colorScheme.secondary
+        containerColor = MaterialTheme.colorScheme.background
     )
 }
 
@@ -110,8 +110,12 @@ fun NavHostContainer(
             composable(RouterSet.LOADING_SCREEN.name) {
                 LoadingScreen(navController = navController)
             }
-            composable(RouterSet.MATERIAL_SCREEN.name) {
+            composable(RouterSet.LIST_SCREEN.name) {
                 MaterialListScreen(navController = navController)
+            }
+            composable(RouterSet.MATERIAL_SCREEN.name + "/{materialId}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("materialId")?.toLongOrNull()
+                MaterialScreen(id)
             }
         }
     )
