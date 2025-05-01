@@ -29,6 +29,7 @@ import com.eurico.patol.R
 import com.eurico.patol.model.database.MaterialDTO
 import com.eurico.patol.ui.RouterSet
 import com.eurico.patol.ui.screen.components.RotatingIcon
+import com.eurico.patol.ui.screen.components.ScaleText
 import com.eurico.patol.viewmodel.MaterialListViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -101,16 +102,16 @@ fun ItemBoxDescription(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            ScaleText(
                 text = material.title,
-                fontSize = 48.sp,
+                fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
-            Text(
+            ScaleText(
                 text = material.subtitle,
-                fontSize = 24.sp,
+                fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )

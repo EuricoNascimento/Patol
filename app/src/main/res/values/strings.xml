@@ -12,4 +12,8 @@
     <string name="item_box_description">Material: %s. Clique para selecionar</string>
     <string name="back_page">Anterior: pagina %d</string>
     <string name="next_page">Proximo: pagina %d</string>
+    <string name="size_text">Escala da fonte: %.2fx</string>
+    <string name="list_screen">Lista de Materiais</string>
+    <string name="material">Material</string>
+    <string name="configuration">Configuração</string>
 </resources>

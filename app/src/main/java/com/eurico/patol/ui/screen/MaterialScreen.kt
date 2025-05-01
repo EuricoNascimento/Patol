@@ -42,6 +42,7 @@ import com.eurico.patol.R
 import com.eurico.patol.model.ContentType
 import com.eurico.patol.model.database.ContentDTO
 import com.eurico.patol.ui.screen.components.RotatingIcon
+import com.eurico.patol.ui.screen.components.ScaleText
 import com.eurico.patol.viewmodel.MaterialViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -74,13 +75,14 @@ fun ContentScreen(
 ) {
     val context = LocalContext.current
     if (contentList.isEmpty()) {
-        Text(
+        ScaleText(
             text = context.getString(R.string.no_content_available),
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp
         )
         return
     }
@@ -119,7 +121,7 @@ fun ContentScreen(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = {
@@ -127,14 +129,20 @@ fun ContentScreen(
                     pagerState.animateScrollToPage(pagerState.currentPage - 1)
                 }
             }, enabled = pagerState.currentPage > 0) {
-                Text(stringResource(R.string.back_page, pagerState.currentPage))
+                ScaleText(
+                    text = stringResource(R.string.back_page, pagerState.currentPage),
+                    fontSize = 8.sp
+                )
             }
             Button(onClick = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
             }, enabled = pagerState.currentPage < contentList.size - 1) {
-                Text(stringResource(R.string.next_page, pagerState.currentPage + 1))
+                ScaleText(
+                    text = stringResource(R.string.next_page, pagerState.currentPage + 1),
+                    fontSize = 8.sp
+                )
             }
         }
     }
@@ -162,14 +170,12 @@ fun ContentItem(content: ContentDTO, page: Int, context: Context) {
 
 @Composable
 fun TextContent(content: ContentDTO) {
-    Text(
+    ScaleText(
         text = content.text,
         modifier = Modifier
-            .fillMaxSize()
-            .semantics { contentDescription = content.text },
+            .fillMaxSize(),
         overflow = TextOverflow.Ellipsis,
         fontSize = 18.sp,
-        lineHeight = 24.sp,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.onSurface
     )

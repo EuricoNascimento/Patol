@@ -10,10 +10,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.eurico.patol.R
 import com.eurico.patol.ui.RouterSet
 import com.eurico.patol.ui.screen.components.RotatingIcon
+import com.eurico.patol.ui.screen.components.ScaleText
 import com.eurico.patol.viewmodel.LoadingViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,8 +40,9 @@ internal fun LoadingScreen(
         when(loginPhrase.value.value) {
             0 -> RotatingIcon()
             else -> {
-                Text(
-                    text = stringResource(loginPhrase.value.value)
+                ScaleText(
+                    text = stringResource(loginPhrase.value.value),
+                    fontSize = 16.sp
                 )
                 LaunchedEffect(Unit) {
                     if (loginPhrase.value.value == R.string.sucess_login) {
