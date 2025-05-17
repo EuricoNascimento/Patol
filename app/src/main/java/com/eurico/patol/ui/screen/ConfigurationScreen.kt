@@ -46,7 +46,7 @@ fun ConfigurationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -60,8 +60,8 @@ fun ConfigurationScreen(
                 },
                 valueRange = 0.5f..3f,
                 colors = SliderDefaults.colors(
-                    thumbColor = MaterialTheme.colorScheme.onPrimary,
-                    activeTrackColor = MaterialTheme.colorScheme.onPrimary,
+                    thumbColor = MaterialTheme.colorScheme.secondary,
+                    activeTrackColor = MaterialTheme.colorScheme.secondary,
                 )
             )
         }
@@ -83,8 +83,8 @@ fun SetupItem(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             ScaleText(
                 text = label,
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onPrimary)
+                fontSize = 24.sp
+            )
             content()
         }
     }

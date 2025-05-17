@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -87,9 +88,12 @@ fun Router() {
                                 .size(24.dp)
                                 .clickable { navController.popBackStack() }
                         )
-                        Text(
-                            text = stringResource(R.string.configuration),
+
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = stringResource(R.string.configuration),
                             modifier = Modifier
+                                .size(32.dp)
                                 .clickable {
                                     navController.navigate(RouterSet.CONFIGURATION.name)
                                 }

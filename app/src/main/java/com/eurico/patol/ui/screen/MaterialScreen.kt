@@ -17,7 +17,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -107,7 +113,7 @@ fun ContentScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onPrimaryContainer, MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.scrim, MaterialTheme.shapes.large)
                     .semantics {
                         contentDescription =
                             context.getString(R.string.pager_content_description)
@@ -120,28 +126,36 @@ fun ContentScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                }
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                    }
             }, enabled = pagerState.currentPage > 0) {
-                ScaleText(
-                    text = stringResource(R.string.back_page, pagerState.currentPage),
-                    fontSize = 8.sp
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.back_page, pagerState.currentPage)
                 )
             }
-            Button(onClick = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                }
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    }
             }, enabled = pagerState.currentPage < contentList.size - 1) {
-                ScaleText(
-                    text = stringResource(R.string.next_page, pagerState.currentPage + 1),
-                    fontSize = 8.sp
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = stringResource(R.string.next_page, pagerState.currentPage + 1)
                 )
             }
         }
@@ -177,7 +191,7 @@ fun TextContent(content: ContentDTO) {
         overflow = TextOverflow.Ellipsis,
         fontSize = 18.sp,
         textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onPrimary
     )
 }
 
